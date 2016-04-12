@@ -13,6 +13,7 @@
 const ClientCredentials = require('client-credentials');
 const HttpsService = require('https-service');
 const async = require('async');
+const util = require('util');
 
 //------------------------------------------------------------------------------
 // Initialization
