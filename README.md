@@ -24,7 +24,7 @@ api.get('/v1.0/users', (err, users)=> {
 
 ## 3. API
 
-Since the `GraphService` class subclasses the `[HttpsService](https://github.com/fhellwig/https-service)` class, the API is identical as for that class, with three exceptions. First, the constructor accepts the same arguments as the `ClientCredentials` class. Second, there is an additional `authorizedRequest` method that accepts a token provided by the client instead of using the client credentials created in the constructor. Third, the `all` method performs repeated `GET` requests, accumulating the results.
+Since the `GraphService` class subclasses the [HttpsService](https://github.com/fhellwig/https-service) class, the API is identical as for that class, with three exceptions. First, the constructor accepts the same arguments as the [ClientCredentials](https://github.com/fhellwig/client-credentials) class. Second, there is an additional `authorizedRequest` method that accepts a token provided by the client instead of using the client credentials created in the constructor. Third, the `all` method performs repeated `GET` requests, accumulating the results.
 
 ### 3.1 constructor
 
