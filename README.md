@@ -17,9 +17,9 @@ const GraphService = require('graph-service');
 
 const api = new GraphService('my-company.com', 'client-id', 'client-secret');
 
-api.get('/v1.0/users', (err, users)=> {
-    console.log(users)	;
-})
+api.get('/v1.0/users', (err, users) => {
+    console.log(users);
+});
 ```
 
 ## 3. API
