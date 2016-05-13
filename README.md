@@ -2,7 +2,7 @@
 
 A service for accessing the Microsoft Graph API.
 
-Version 1.0.5
+Version 1.0.6
 
 Exports the GraphService class. This class is subclassed from the `HttpsService` class (see [https-service](https://github.com/fhellwig/https-service)) and uses the `ClientCredentials` class (see [client-credentials](https://github.com/fhellwig/client-credentials)).
 
@@ -23,6 +23,16 @@ api.get('/v1.0/users', (err, users) => {
     console.log(users);
 });
 ```
+
+### 2.1 Endpoints
+
+By default, this utility uses the `https://graph.microsoft.com` endpoint. You can specify the older `https://graph.windows.net` endpoint by adding a version number as the last argument in the constructor:
+
+```javascript
+const api = new GraphService('my-company.com', 'client-id', 'client-secret', '1.6');
+```
+
+This will use the older endpoint and add the `api-version` query parameter to all paths.
 
 ## 3. API
 

@@ -19,16 +19,24 @@ const util = require('util');
 // Initialization
 //------------------------------------------------------------------------------
 
-const RESOURCE = 'https://graph.microsoft.com';
+const NEW_ENDPOINT = 'https://graph.microsoft.com';
+const OLD_ENDPOINT = 'https://graph.windows.net';
+
+//https://graph.windows.net/{tenant_id}/{resource_path}?{api_version}[odata_query_parameters]
+
 
 //------------------------------------------------------------------------------
 // Public
 //------------------------------------------------------------------------------
 
 class GraphService extends HttpsService {
-    constructor(tenant, clientId, clientSecret) {
-        super(RESOURCE);
-        if (arguments.length === 3) {
+    constructor(tenant, clientId, clientSecret, apiVersion) {
+        const endpoint = apiVersion ? OLD_ENDPOINT : NEW_ENDPOINT;
+        super(endpoint);
+        this.apiVersion = apiVersion;
+        this.endpoint = endpoint;
+        this.tenant = tenant;
+        if (arguments.length > 2) {
             this.cred = new ClientCredentials(tenant, clientId, clientSecret);
         }
     }
@@ -70,7 +78,7 @@ class GraphService extends HttpsService {
                 'GraphService object with three arguments or provide your ' +
                 'own access token and call the authorizedRequest method.');
         }
-        this.cred.getAccessToken(RESOURCE, (err, token) => {
+        this.cred.getAccessToken(this.endpoint, (err, token) => {
             this.authorizedRequest(token, method, path, headers, data, callback);
         });
     }
@@ -81,6 +89,21 @@ class GraphService extends HttpsService {
         let raw = path.endsWith('$value');
         if (!raw) {
             headers['accept'] = HttpsService.JSON_MEDIA_TYPE;
+        }
+        if (this.apiVersion) {
+            let buf = ['/'];
+            buf.push(this.tenant);
+            if (!path.startsWith('/')) {
+                buf.push('/');
+            }
+            buf.push(path);
+            if (path.indexOf('?') < 0) {
+                buf.push('?api-version=');
+            } else {
+                buf.push('&api-version=');
+            }
+            buf.push(this.apiVersion);
+            path = buf.join('');
         }
         super.request(method, path, headers, data, callback);
     }

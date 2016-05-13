@@ -1,6 +1,6 @@
 {
   "name": "graph-service",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A service for accessing the Microsoft Graph API.",
   "main": "graph-service.js",
   "scripts": {
@@ -23,6 +23,6 @@
   "homepage": "https://github.com/fhellwig/graph-service#readme",
   "dependencies": {
     "client-credentials": "^1.0.2",
-    "https-service": "^1.0.3"
+    "https-service": "^1.0.4"
   }
 }
