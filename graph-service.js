@@ -60,7 +60,7 @@ class GraphService extends HttpsService {
                         return callback(new Error('Expected an array body.value property.'));
                     }
                     results = results.concat(body.value);
-                    path = body['@odata.nextLink'] || null;
+                    path = body['@odata.nextLink'] || body['odata.nextLink'] || null;
                     query = null;
                     callback(null, results, type, headers);
                 });
