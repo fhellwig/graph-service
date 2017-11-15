@@ -2,7 +2,7 @@
 
 A service for accessing the Microsoft Graph API.
 
-Version 1.0.9
+Version 1.0.10
 
 Exports the GraphService class. This class is subclassed from the `HttpsService` class (see [https-service](https://github.com/fhellwig/https-service)) and uses the `ClientCredentials` class (see [client-credentials](https://github.com/fhellwig/client-credentials)).
 
