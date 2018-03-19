@@ -2,7 +2,7 @@
 
 A service for accessing the Microsoft Graph API.
 
-Version 1.0.10
+Version 2.0.0
 
 Exports the GraphService class. This class is subclassed from the `HttpsService` class (see [https-service](https://github.com/fhellwig/https-service)) and uses the `ClientCredentials` class (see [client-credentials](https://github.com/fhellwig/client-credentials)).
 
@@ -19,7 +19,7 @@ const GraphService = require('graph-service');
 
 const api = new GraphService('my-company.com', 'client-id', 'client-secret');
 
-api.get('/v1.0/users', (err, users) => {
+api.get('/v1.0/users').then(users => {
     console.log(users);
 });
 ```
@@ -57,16 +57,16 @@ Sets the `Authorization` header with the bearer token and then calls the `reques
 ### 3.3 all
 
 ```javascript
-all(path, [query,], callback)
+all(path [, query])
 ```
 
-Sends repeated `GET` requests to a resource that returns a list. This method accumulates the results from the `value` property and follows the `@odata.nextLink` property.
+Sends repeated `GET` requests to a resource that returns a list. This method accumulates the results from the `value` property and follows the `@odata.nextLink` property. Returns a promise that is resolved with all of the objects.
 
 ## 4. License
 
 The MIT License (MIT)
 
-Copyright (c) 2016 Frank Hellwig
+Copyright (c) 2018 Frank Hellwig
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
