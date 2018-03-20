@@ -9,7 +9,7 @@
 const HttpsService = require('https-service');
 
 const ENDPOINT = 'https://graph.microsoft.com';
-const VERSION = 'v1.0'
+const VERSION = 'v1.0';
 
 class GraphService extends HttpsService {
   constructor(credentials, version = VERSION) {
@@ -18,7 +18,7 @@ class GraphService extends HttpsService {
       throw new Error('The credentials must be an object providing the getAccessToken method.');
     }
     if (typeof version !== 'string' || version.length === 0) {
-      throw new Error('The version must be a non-empty string.')
+      throw new Error('The version must be a non-empty string.');
     }
     this.credentials = credentials;
     this.version = version;
@@ -51,7 +51,8 @@ class GraphService extends HttpsService {
 
   request(method, path, headers, data) {
     return this.credentials.getAccessToken(ENDPOINT).then(token => {
-      if (this.version) {
+      // Don't add the version for @odata.nextLink paths as they are absolute URIs.
+      if (path.startsWith('/')) {
         path = `/${this.version}${path}`;
       }
       headers = headers || {};
