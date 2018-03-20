@@ -6,20 +6,28 @@ Version 2.0.2
 
 Exports the `GraphService` class allowing you to access the Microsoft Graph API at `https://graph.microsoft.com`. The `GraphService` class is subclassed from the [`HttpsService`](https://github.com/fhellwig/https-service) class. The `GraphService` class constructor requires a credentials object having a `getAccessToken` method to obtain the bearer token that is sent with each request. You can use the [`ClientCredentials`](https://github.com/fhellwig/client-credentials) or provide your own instance as long as it provides the `getAccessToken` method that returns a promise resolved with an access token.
 
+The default Graph API version is `v1.0`. This can be overridded in the constructor (e.g., `beta`).
+
 ## 1. Installation
 
+Install this package and, optionally, the [`client-credentials`](https://github.com/fhellwig/client-credentials) package.
 ```bash
 $ npm install --save graph-service
+$ npm install --save client-credentials
 ```
 
 ## 2. Usage
 
 ```javascript
 const GraphService = require('graph-service');
+const ClientCredentials = require('client-credentials');
 
-const api = new GraphService('my-company.com', 'client-id', 'client-secret');
+const clientId = '0b13aa29-ca6b-42e8-a083-89e5bccdf141';
+const clientSecret = 'lsl2isRe99Flsj32elwe89234ljhasd8239jsad2sl='
+const credentials = new ClientCredentials('my-company.com', '<client-id', '<client-secret>');
+const service = new GraphService(credentials)
 
-api.all('/v1.0/users').then(response => {
+service.all('/users').then(response => {
     console.log(response.data);
 });
 ```
