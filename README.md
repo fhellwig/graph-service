@@ -23,9 +23,11 @@ $ npm install --save client-credentials
 const GraphService = require('graph-service');
 const ClientCredentials = require('client-credentials');
 
+const tenant = 'my-company.com';
 const clientId = '0b13aa29-ca6b-42e8-a083-89e5bccdf141';
 const clientSecret = 'lsl2isRe99Flsj32elwe89234ljhasd8239jsad2sl='
-const credentials = new ClientCredentials('my-company.com', '<client-id', '<client-secret>');
+
+const credentials = new ClientCredentials(tenant, clientId, clientSecret);
 
 const service = new GraphService(credentials)
 
