@@ -4,7 +4,7 @@ A service for accessing the Microsoft Graph API.
 
 Version 2.0.2
 
-Exports the `GraphService` class allowing you to access the Microsoft Graph API at `https://graph.microsoft.com`. The `GraphService` class is subclassed from the [`HttpsService`](https://github.com/fhellwig/https-service) class. The `GraphService` class constructor requires a credentials object having a `getAccessToken` method to obtain the bearer token that is sent with each request. You can use the [`ClientCredentials`](https://github.com/fhellwig/client-credentials) or provide your own instance as long as it provides the `getAccessToken` method that returns a promise resolved with an access token.
+Exports the `GraphService` class allowing you to access the Microsoft Graph API at `https://graph.microsoft.com`. The `GraphService` class is subclassed from the [`HttpsService`](https://github.com/fhellwig/https-service) class. The `GraphService` class constructor requires a credentials object having a `getAccessToken` method to obtain the bearer token that is sent with each request. You can use a [`ClientCredentials`](https://github.com/fhellwig/client-credentials) instance or provide your own instance as long as it provides the `getAccessToken` method that returns a promise resolved with an access token.
 
 The default Graph API version is `v1.0`. This can be overridded in the constructor (e.g., `beta`).
 
@@ -36,7 +36,7 @@ service.all('/users').then(response => {
 
 ## 3. API
 
-Since the `GraphService` class subclasses the [HttpsService](https://github.com/fhellwig/https-service) class, the API is identical as for that class, with three exceptions. First, the constructor requires a credentials object (an object that provides the `getAccessToken` method. Second, the `all` method performs repeated `GET` requests, accumulating the results.
+Since the `GraphService` class subclasses the [HttpsService](https://github.com/fhellwig/https-service) class, the API is identical to that class, with two exceptions. First, the constructor requires a credentials object (an object that provides the `getAccessToken` method). Second, the `all` method performs repeated `GET` requests, accumulating the results.
 
 ### 3.1 constructor
 
@@ -54,7 +54,7 @@ The version parameter defaults to the string `v1.0` and is prepended to all path
 all(path [, query])
 ```
 
-Sends repeated `GET` requests to a resource that returns a list. This method accumulates the results from the `value` property and follows the `@odata.nextLink` property. Returns a promise that is resolved with the response from the last `HttpsService` GET request and the data set to the concatenation of all of the retrieved objects.
+Sends repeated `GET` requests to a resource that returns a list. This method accumulates the results from the `value` property and follows the `@odata.nextLink` property. Returns a promise that is resolved with the response from the last `HttpsService` GET request and the `data` property set to the concatenation of all of the retrieved objects.
 
 ## 4. License
 
