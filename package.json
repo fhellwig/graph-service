@@ -22,8 +22,6 @@
   },
   "homepage": "https://github.com/fhellwig/graph-service#readme",
   "dependencies": {
-    "async": "^2.0.0-rc.6",
-    "client-credentials": "^1.1.0",
     "https-service": "^2.0.5"
   }
 }
