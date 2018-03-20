@@ -6,38 +6,18 @@
 
 'use strict';
 
-//------------------------------------------------------------------------------
-// Dependencies
-//------------------------------------------------------------------------------
-
-const ClientCredentials = require('client-credentials');
 const HttpsService = require('https-service');
-const async = require('async');
-const util = require('util');
 
-//------------------------------------------------------------------------------
-// Initialization
-//------------------------------------------------------------------------------
-
-const NEW_ENDPOINT = 'https://graph.microsoft.com';
-const OLD_ENDPOINT = 'https://graph.windows.net';
-
-//https://graph.windows.net/{tenant_id}/{resource_path}?{api_version}[odata_query_parameters]
-
-//------------------------------------------------------------------------------
-// Public
-//------------------------------------------------------------------------------
+const ENDPOINT = 'https://graph.microsoft.com';
 
 class GraphService extends HttpsService {
-  constructor(tenant, clientId, clientSecret, apiVersion) {
-    const endpoint = apiVersion ? OLD_ENDPOINT : NEW_ENDPOINT;
-    super(endpoint);
-    this.apiVersion = apiVersion;
-    this.endpoint = endpoint;
-    this.tenant = tenant;
-    if (arguments.length > 2) {
-      this.cred = new ClientCredentials(tenant, clientId, clientSecret);
+  constructor(credentials, version) {
+    super(ENDPOINT);
+    if (typeof credentials !== 'object' || typeof credentials.getAccessToken !== 'function') {
+      throw new Error('The credentials must be an object providing the getAccessToken method.');
     }
+    this.credentials = credentials;
+    this.version = version || null;
   }
 
   all(path, query) {
@@ -66,46 +46,18 @@ class GraphService extends HttpsService {
   }
 
   request(method, path, headers, data) {
-    if (!this.cred) {
-      throw new Error(
-        'No client credentials. Either create a ' +
-          'GraphService object with three arguments or provide your ' +
-          'own access token and call the authorizedRequest method.'
-      );
-    }
-    return this.cred.getAccessToken(this.endpoint).then(token => {
-      return this.authorizedRequest(token, method, path, headers, data);
+    return this.credentials.getAccessToken(ENDPOINT).then(token => {
+      if (this.version) {
+        path = this.version + path;
+      }
+      headers = headers || {};
+      headers['authorization'] = 'Bearer ' + token;
+      if (!path.endsWith('$value')) {
+        headers['accept'] = HttpsService.JSON_MEDIA_TYPE;
+      }
+      return super.request(method, path, headers, data);
     });
   }
-
-  authorizedRequest(token, method, path, headers, data) {
-    headers = headers || {};
-    headers['authorization'] = 'Bearer ' + token;
-    let raw = path.endsWith('$value');
-    if (!raw) {
-      headers['accept'] = HttpsService.JSON_MEDIA_TYPE;
-    }
-    if (this.apiVersion) {
-      let buf = ['/'];
-      buf.push(this.tenant);
-      if (!path.startsWith('/')) {
-        buf.push('/');
-      }
-      buf.push(path);
-      if (path.indexOf('?') < 0) {
-        buf.push('?api-version=');
-      } else {
-        buf.push('&api-version=');
-      }
-      buf.push(this.apiVersion);
-      path = buf.join('');
-    }
-    return super.request(method, path, headers, data);
-  }
 }
-
-//------------------------------------------------------------------------------
-// Exports
-//------------------------------------------------------------------------------
 
 module.exports = GraphService;

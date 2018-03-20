@@ -11,6 +11,7 @@ The default Graph API version is `v1.0`. This can be overridded in the construct
 ## 1. Installation
 
 Install this package and, optionally, the [`client-credentials`](https://github.com/fhellwig/client-credentials) package.
+
 ```bash
 $ npm install --save graph-service
 $ npm install --save client-credentials
@@ -25,6 +26,7 @@ const ClientCredentials = require('client-credentials');
 const clientId = '0b13aa29-ca6b-42e8-a083-89e5bccdf141';
 const clientSecret = 'lsl2isRe99Flsj32elwe89234ljhasd8239jsad2sl='
 const credentials = new ClientCredentials('my-company.com', '<client-id', '<client-secret>');
+
 const service = new GraphService(credentials)
 
 service.all('/users').then(response => {
@@ -32,43 +34,27 @@ service.all('/users').then(response => {
 });
 ```
 
-### 2.1 Endpoints
-
-By default, this utility uses the `https://graph.microsoft.com` endpoint. You can specify the older `https://graph.windows.net` endpoint by adding a version number as the last argument in the constructor:
-
-```javascript
-const api = new GraphService('my-company.com', 'client-id', 'client-secret', '1.6');
-```
-
-This will use the older endpoint and add the `api-version` query parameter to all paths.
-
 ## 3. API
 
-Since the `GraphService` class subclasses the [HttpsService](https://github.com/fhellwig/https-service) class, the API is identical as for that class, with three exceptions. First, the constructor accepts the same arguments as the [ClientCredentials](https://github.com/fhellwig/client-credentials) class. Second, there is an additional `authorizedRequest` method that accepts a token provided by the client instead of using the client credentials created in the constructor. Third, the `all` method performs repeated `GET` requests, accumulating the results.
+Since the `GraphService` class subclasses the [HttpsService](https://github.com/fhellwig/https-service) class, the API is identical as for that class, with three exceptions. First, the constructor requires a credentials object (an object that provides the `getAccessToken` method. Second, the `all` method performs repeated `GET` requests, accumulating the results.
 
 ### 3.1 constructor
 
 ```javascript
-GraphService([tenant, clientId, clientSecret])
+GraphService(credentials, version)
 ```
 
-Creates a new `GraphService` instance for the specified `tenant`. The `clientId` and the `clientSecret` must be for an AAD application that has access rights to the Microsoft Graph resource (`https://graph.microsoft.com`). These three parameters are optional. If you have your own token, and wish to only call the `me` API resources, then you can call the constructor with no arguments. In that case, you must use the `authorizedRequest` method instead of the `request` method, passing in your own access token as the first parameter.
+Creates a new `GraphService` instance using the specified `credentials` object. This normally is an instance of the [`ClientCredentials`](https://github.com/fhellwig/client-credentials) class. It can also be an object you create, as long as it provides the `getAccessToken(resource)` method where the `resource` is always set to the `graph.microsoft.com` endpoint. This method must return a promise that is resolved with a valid access token. For example, if you have your own token from a user who has already authenticated with Azure AD, then you can create a simple object that returns this token in a promise. Note that creating a `GraphService` instance is not expensive (no network traffic takes place) so you can create a new instance for every new user request without any significant performance impact.
 
-### 3.2 authorizedRequest
+The version parameter defaults to the string `/v1.0` and is prepended to all paths. If the version is set to null or an empty string, then you must specify the version in the path of each request (e.g., `/v1.0/users` instead of `/users`).
 
-```javascript
-authorizedRequest(token, method, path, headers, data)
-```
-
-Sets the `Authorization` header with the bearer token and then calls the `request` method. This method can be overridden if an alternate means of creating the bearer token is required. Most implementations will use the default implementation that uses the built-in `ClientCredentials`.
-
-### 3.3 all
+### 3.1 all (method)
 
 ```javascript
 all(path [, query])
 ```
 
-Sends repeated `GET` requests to a resource that returns a list. This method accumulates the results from the `value` property and follows the `@odata.nextLink` property. Returns a promise that is resolved with the last response and the data set to all of the retrieved objects.
+Sends repeated `GET` requests to a resource that returns a list. This method accumulates the results from the `value` property and follows the `@odata.nextLink` property. Returns a promise that is resolved with the response from the last `HttpsService` GET request and the data set to the concatenation of all of the retrieved objects.
 
 ## 4. License
 
