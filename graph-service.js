@@ -41,42 +41,31 @@ class GraphService extends HttpsService {
   }
 
   all(path, query) {
-    return new Promise((resolve, reject) => {
-      let results = [];
-      async.doWhilst(
-        callback => {
-          this.get(path, query)
-            .then(response => {
-              if (response.type !== HttpsService.JSON_MEDIA_TYPE) {
-                return callback(
-                  new Error('Expected ' + HttpsService.JSON_MEDIA_TYPE + ' as the type.')
-                );
-              }
-              if (!response.data || !Array.isArray(response.data.value)) {
-                return callback(new Error('Expected an array body.value property.'));
-              }
-              results = results.concat(response.data.value);
-              path = response.data['@odata.nextLink'] || response.data['odata.nextLink'] || null;
-              query = null;
-              callback(null, response);
-            })
-            .catch(err => {
-              callback(err);
-            });
-        },
-        _ => {
-          return path !== null;
-        },
-        (err, response) => {
-          if (err) return reject(err);
-          response.data = results;
-          resolve(response);
-        }
-      );
+    let results = [];
+    return this._all(path, query, results);
+  }
+
+  _all(path, query, results) {
+    return this.get(path, query).then(response => {
+      if (response.type !== HttpsService.JSON_MEDIA_TYPE) {
+        throw new Error(`Expected ${HttpsService.JSON_MEDIA_TYPE} as the type.`);
+      }
+      const data = response.data;
+      if (!data || !Array.isArray(data.value)) {
+        throw new Error('Expected an array value property.');
+      }
+      results = results.concat(data.value);
+      path = data['@odata.nextLink'] || data['odata.nextLink'] || null;
+      if (path) {
+        return this._all(path, null, results);
+      } else {
+        response.data = results;
+        return response;
+      }
     });
   }
 
-  request(method, path, headers, data, callback) {
+  request(method, path, headers, data) {
     if (!this.cred) {
       throw new Error(
         'No client credentials. Either create a ' +
@@ -84,7 +73,7 @@ class GraphService extends HttpsService {
           'own access token and call the authorizedRequest method.'
       );
     }
-    return this.cred.getAccessToken(this.endpoint, token => {
+    return this.cred.getAccessToken(this.endpoint).then(token => {
       return this.authorizedRequest(token, method, path, headers, data);
     });
   }

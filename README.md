@@ -19,8 +19,8 @@ const GraphService = require('graph-service');
 
 const api = new GraphService('my-company.com', 'client-id', 'client-secret');
 
-api.get('/v1.0/users').then(users => {
-    console.log(users);
+api.all('/v1.0/users').then(response => {
+    console.log(response.data);
 });
 ```
 
@@ -60,7 +60,7 @@ Sets the `Authorization` header with the bearer token and then calls the `reques
 all(path [, query])
 ```
 
-Sends repeated `GET` requests to a resource that returns a list. This method accumulates the results from the `value` property and follows the `@odata.nextLink` property. Returns a promise that is resolved with all of the objects.
+Sends repeated `GET` requests to a resource that returns a list. This method accumulates the results from the `value` property and follows the `@odata.nextLink` property. Returns a promise that is resolved with the last response and the data set to all of the retrieved objects.
 
 ## 4. License
 
