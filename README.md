@@ -2,7 +2,7 @@
 
 A service for accessing the Microsoft Graph API.
 
-Version 2.0.0
+Version 2.0.1
 
 Exports the GraphService class. This class is subclassed from the `HttpsService` class (see [https-service](https://github.com/fhellwig/https-service)) and uses the `ClientCredentials` class (see [client-credentials](https://github.com/fhellwig/client-credentials)).
 
@@ -49,10 +49,10 @@ Creates a new `GraphService` instance for the specified `tenant`. The `clientId`
 ### 3.2 authorizedRequest
 
 ```javascript
-authorizedRequest(token, method, path, headers, data, callback)
+authorizedRequest(token, method, path, headers, data)
 ```
 
-Sets the `Authorization` header with the bearer token and then calls the `request` method.
+Sets the `Authorization` header with the bearer token and then calls the `request` method. This method can be overridden if an alternate means of creating the bearer token is required. Most implementations will use the default implementation that uses the built-in `ClientCredentials`.
 
 ### 3.3 all
 
