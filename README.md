@@ -46,7 +46,7 @@ GraphService(credentials, version)
 
 Creates a new `GraphService` instance using the specified `credentials` object. This normally is an instance of the [`ClientCredentials`](https://github.com/fhellwig/client-credentials) class. It can also be an object you create, as long as it provides the `getAccessToken(resource)` method where the `resource` is always set to the `graph.microsoft.com` endpoint. This method must return a promise that is resolved with a valid access token. For example, if you have your own token from a user who has already authenticated with Azure AD, then you can create a simple object that returns this token in a promise. Note that creating a `GraphService` instance is not expensive (no network traffic takes place) so you can create a new instance for every new user request without any significant performance impact.
 
-The version parameter defaults to the string `/v1.0` and is prepended to all paths. If the version is set to null or an empty string, then you must specify the version in the path of each request (e.g., `/v1.0/users` instead of `/users`).
+The version parameter defaults to the string `v1.0` and is prepended to all paths. For example, calling `service.get('/users')` will send the request to the `/v1.0/users` resource. You must include the initial slash on all paths since the path is created using the `/{version}{path}` construction.
 
 ### 3.1 all (method)
 
