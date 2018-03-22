@@ -1,6 +1,6 @@
 {
   "name": "graph-service",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A service for accessing the Microsoft Graph API.",
   "main": "graph-service.js",
   "scripts": {
@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/fhellwig/graph-service#readme",
   "dependencies": {
-    "https-service": "^2.1.0"
+    "https-service": "^2.1.1"
   }
 }
