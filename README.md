@@ -2,7 +2,7 @@
 
 A service for accessing the Microsoft Graph API.
 
-Version 2.0.6
+Version 2.1.0
 
 Exports the `GraphService` class allowing you to access the Microsoft Graph API at `https://graph.microsoft.com`. The `GraphService` class is subclassed from the [`HttpsService`](https://github.com/fhellwig/https-service) class. The `GraphService` class constructor requires a credentials object having a `getAccessToken` method to obtain the bearer token that is sent with each request. You can use a [`ClientCredentials`](https://github.com/fhellwig/client-credentials) instance or provide your own instance as long as it provides the `getAccessToken` method that returns a promise resolved with an access token.
 
