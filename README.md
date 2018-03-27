@@ -2,7 +2,7 @@
 
 A service for accessing the Microsoft Graph API.
 
-Version 2.1.1
+Version 2.1.2
 
 Exports the `GraphService` class allowing you to access the Microsoft Graph API at `https://graph.microsoft.com`. The `GraphService` class is subclassed from the [`HttpsService`](https://github.com/fhellwig/https-service) class. The `GraphService` class constructor requires a credentials object having a `getAccessToken` method to obtain the bearer token that is sent with each request. You can use a [`ClientCredentials`](https://github.com/fhellwig/client-credentials) instance or provide your own instance as long as it provides the `getAccessToken` method that returns a promise resolved with an access token.
 
@@ -25,14 +25,14 @@ const ClientCredentials = require('client-credentials');
 
 const tenant = 'my-company.com';
 const clientId = '0b13aa29-ca6b-42e8-a083-89e5bccdf141';
-const clientSecret = 'lsl2isRe99Flsj32elwe89234ljhasd8239jsad2sl='
+const clientSecret = 'lsl2isRe99Flsj32elwe89234ljhasd8239jsad2sl=';
 
 const credentials = new ClientCredentials(tenant, clientId, clientSecret);
 
-const service = new GraphService(credentials)
+const service = new GraphService(credentials);
 
 service.all('/users').then(response => {
-    console.log(response.data);
+  console.log(response.data);
 });
 ```
 
@@ -43,10 +43,12 @@ Since the `GraphService` class subclasses the [HttpsService](https://github.com/
 ### 3.1 constructor
 
 ```javascript
-GraphService(credentials, version)
+GraphService(credentials, version);
 ```
 
 Creates a new `GraphService` instance using the specified `credentials` object. This normally is an instance of the [`ClientCredentials`](https://github.com/fhellwig/client-credentials) class. It can also be an object you create, as long as it provides the `getAccessToken(resource)` method where the `resource` is always set to the `graph.microsoft.com` endpoint. This method must return a promise that is resolved with a valid access token. For example, if you have your own token from a user who has already authenticated with Azure AD, then you can create a simple object that returns this token in a promise. Note that creating a `GraphService` instance is not expensive (no network traffic takes place) so you can create a new instance for every new user request without any significant performance impact.
+
+As a special case (as of version 2.1.2), the `credentials` parameter can also be a string. In that case, it is assumed to be the access token and is used directly in requests to the Graph API. Please note that access tokens expire so this feature should only be used when a client provides current (and periodically refreshed) access tokens. You would then create a new `GraphService` instance for each request with the current access token being passed in as the `credentials` parameter in the constructor.
 
 The version parameter defaults to the string `v1.0` and is prepended to all paths. For example, calling `service.get('/users')` will send the request to the `/v1.0/users` resource. You must include the initial slash on all paths since the path is created using the `/{version}{path}` construction.
 
